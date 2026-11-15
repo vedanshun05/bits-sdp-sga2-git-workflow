@@ -169,3 +169,35 @@ Confirm main tracks origin/main and has no uncommitted tracked changes.
 
 gh repo view vedanshun05/bits-sdp-sga2-git-workflow --json url,visibility
 Verify that the repository is public and display its URL.
+
+10. Repository verification
+
+git ls-files
+Verify that only the two HTML files, .gitignore, and git_commands.txt are tracked.
+
+git status --porcelain
+A blank result confirms that the tracked working tree is clean.
+
+git rev-list --parents -n 1 38bc539
+Verify that the feature merge has two parents.
+
+git rev-parse 851fd27~2:about.html
+Read the file-object identifier before the temporary notice commit.
+
+git rev-parse 851fd27:about.html
+Read the file-object identifier after the revert; it matches the earlier identifier.
+
+git check-ignore debug.log temp/cache.txt
+Verify that both sample paths are ignored.
+
+git ls-remote --heads origin
+Verify that GitHub contains both main and feature.
+
+git add git_commands.txt
+Stage the completed verification-command documentation.
+
+git commit -m "Record repository verification commands"
+Record the added verification-command explanations.
+
+git push origin main
+Publish the completed command record.
