@@ -1,0 +1,171 @@
+Software Development Practices SGA 2
+Git workflow command record
+Public repository: https://github.com/vedanshun05/bits-sdp-sga2-git-workflow
+
+Git and GitHub CLI commands are recorded below with the local file-editing commands used between them.
+All repository configuration changes are local to this demonstration repository.
+
+1. Local repository and initial commit
+
+ls -1
+Show that index.html and about.html exist locally before initializing Git.
+
+git init -b main
+Initialize the local repository with main as its initial branch.
+
+git config user.name "Vedanshu Nishad"
+Set the author name only for this repository.
+
+git config user.email "162875850+vedanshun05@users.noreply.github.com"
+Use the GitHub noreply email address for these commits.
+
+git config commit.gpgsign false
+Use unsigned commits for this repository; do not change global signing settings.
+
+git add index.html about.html
+Stage the two initial HTML files.
+
+git commit -m "Initial commit with home and about pages"
+Record the initial project state.
+
+git status --short
+Confirm the tracked working tree is clean after the initial commit.
+
+2. Second commit on main
+
+sed -i 's/Initial baseline/Main branch update/' index.html
+Modify the version text in the home page.
+
+git diff -- index.html
+Display the modification before committing it.
+
+git add index.html
+Stage the home-page change.
+
+git commit -m "Update home page description"
+Record a second, distinct commit on main.
+
+3. Feature branch and its commit
+
+git branch feature
+Create the required feature branch from the current main commit.
+
+git switch feature
+Switch the working tree to feature.
+
+sed -i 's/Version control demonstration\./Version control demonstration with a feature branch./' about.html
+Make a content change on the feature branch.
+
+git add about.html
+Stage the feature-branch change.
+
+git commit -m "Add feature branch details to about page"
+Record the change on feature.
+
+4. Merge and branch history
+
+git switch main
+Return to main before merging.
+
+git merge --no-ff feature -m "Merge feature branch"
+Merge feature while retaining an explicit merge commit in the history.
+
+git log --graph --oneline --decorate --all
+Display the graph, commit identifiers, and branch labels.
+
+5. Ignore rules and their effect
+
+printf '*.log\ntemp/\n' > .gitignore
+Create ignore rules for .log files and the temp directory.
+
+mkdir -p temp
+Create a folder used to demonstrate the ignore rule.
+
+touch debug.log temp/cache.txt
+Create files that should be ignored.
+
+git status --short --ignored
+Show the ignored files and the new .gitignore file.
+
+git check-ignore -v debug.log temp/cache.txt
+Show the exact rule and line responsible for ignoring each path.
+
+git add .gitignore
+Stage only the ignore rules, not the ignored files.
+
+git commit -m "Ignore log files and temporary directory"
+Commit the ignore configuration.
+
+6. Additional commit and undo with revert
+
+sed -i 's/Project status: Stable\./Project status: Temporary notice./' about.html
+Introduce a reversible content change.
+
+git add about.html
+Stage the temporary change.
+
+git commit -m "Add temporary project notice"
+Create the additional commit required for the undo operation.
+
+git show --stat --oneline HEAD
+Show the temporary commit and its affected file.
+
+git revert --no-edit HEAD
+Create a new commit that reverses the latest commit while preserving history.
+
+git diff HEAD~2 HEAD -- about.html
+An empty diff confirms that about.html matches its state before the temporary commit.
+
+git rev-parse HEAD~2:about.html HEAD:about.html
+Matching object identifiers independently confirm the restored file content.
+
+git log --oneline -3
+Show the revert, temporary commit, and preceding commit.
+
+git status --short
+Confirm no tracked changes remain after the revert.
+
+7. Create the public GitHub repository
+
+gh repo create vedanshun05/bits-sdp-sga2-git-workflow \
+  --public \
+  --description "Git workflow demonstration for Software Development Practices SGA 2"
+Create the public remote repository only after completing the local Git workflow.
+
+git remote add origin \
+  https://github.com/vedanshun05/bits-sdp-sga2-git-workflow.git
+Connect the existing local repository to the new GitHub remote.
+
+git config credential.https://github.com.helper '!gh auth git-credential'
+Use the existing GitHub CLI authentication for this repository without storing a token in project files.
+
+git push -u origin main feature
+Push main and feature and configure their upstream tracking branches.
+
+git remote -v
+Display the configured fetch and push URL.
+
+8. Command file and final published history
+
+cp ../assignments-sga2/software-development-practices/git_commands.txt git_commands.txt
+Copy the prepared command documentation into the project.
+
+git add git_commands.txt
+Stage the required command documentation file.
+
+git commit -m "Document Git workflow commands"
+Include the command record in the repository.
+
+git push origin main
+Publish the command file and final main history.
+
+git log --graph --oneline --decorate --all
+Show the final history, including both published branches, the merge, and the revert.
+
+git status --short --branch
+Confirm main tracks origin/main and has no uncommitted tracked changes.
+
+9. Verify GitHub visibility
+
+gh repo view vedanshun05/bits-sdp-sga2-git-workflow --json url,visibility
+Verify that the repository is public and display its URL.
